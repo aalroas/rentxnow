@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Auth\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -18,6 +19,17 @@ class UserController extends Controller
         return response()->json($request->user());
     }
 
+
+    /**
+     * Get the authenticated User
+     *
+     * @return [json] user object
+     */
+    public function view($id)
+    {
+        $user = User::find($id);
+        return response()->json($user);
+    }
 
 
     /**

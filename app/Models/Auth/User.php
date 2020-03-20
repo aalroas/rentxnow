@@ -17,12 +17,12 @@ class User extends BaseUser
         UserRelationship,
         UserScope;
 
-
+    protected $hidden = ['pivot', 'password', 'password_changed_at', 'confirmation_code', 'remember_token'];
 
     public function properties()
     {
-        // return $this->hasMany('App\Models\Property');
-        return $this->hasMany('App\Models\Property', 'user_properties');
+
+        return $this->hasMany('App\Models\Property', 'id', 'user_id');
     }
 
 

@@ -2,15 +2,28 @@
 
 namespace App\Providers;
 
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-
+use App\Services\SocialUserResolver;
+use Coderello\SocialGrant\Resolvers\SocialUserResolverInterface;
 /**
  * Class AppServiceProvider.
  */
 class AppServiceProvider extends ServiceProvider
 {
+
+    /**
+     * All of the container bindings that should be registered.
+     *
+     * @var array
+     */
+    public $bindings = [
+        SocialUserResolverInterface::class => SocialUserResolver::class,
+    ];
+
+
     /**
      * Register any application services.
      */
@@ -83,5 +96,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::if('langrtl', function ($session_identifier = 'lang-rtl') {
             return session()->has($session_identifier);
         });
+
+
     }
 }

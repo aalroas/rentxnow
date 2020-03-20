@@ -54,7 +54,33 @@
                     </ul>
                 </li>
 
+
+
+
                 <li class="divider"></li>
+
+<a class="nav-link  {{
+                            active_class(Route::is('admin/property*'))
+                        }}" href="{{ route('admin.property.index') }}">
+    <i class="nav-icon fas fa-list"></i> Properties
+</a>
+
+<a class="nav-link  {{
+                            active_class(Route::is('admin/listing_type*'))
+                        }}" href="{{ route('admin.listing_type.index') }}">
+    <i class="nav-icon fas fa-list"></i> Listing Type
+</a>
+<a class="nav-link  {{
+                            active_class(Route::is('admin/property_type*'))
+                        }}" href="{{ route('admin.property_type.index') }}">
+    <i class="nav-icon fas fa-list"></i> Property Type
+</a>
+<a class="nav-link  {{
+                            active_class(Route::is('admin/rooms_type*'))
+                        }}" href="{{ route('admin.rooms_type.index') }}">
+    <i class="nav-icon fas fa-list"></i> Rooms Type
+</a>
+
 
                 <li class="nav-item nav-dropdown {{
                     active_class(Route::is('admin/log-viewer*'), 'open')

@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Property_images extends Model
+class property_images extends Model
 {
-// this class to store and get image for products this is a MODEL
-     protected $fillable = [
-        'property_id',
-        'image'
-    ];
+    public $timestamps = false;
+    protected $hidden = ['pivot'];
 
+    protected $fillable = ['property_id', 'property_image_path'];
     public function property()
     {
         return $this->belongsTo('App\Models\Property');

@@ -14,6 +14,7 @@
         "altek/accountant": "^1.2",
         "altek/eventually": "^1.0",
         "arcanedev/log-viewer": "^5.0",
+        "coderello/laravel-passport-social-grant": "^2.1",
         "creativeorange/gravatar": "~1.0",
         "davejamesmiller/laravel-breadcrumbs": "^5.0",
         "facade/ignition": "^1.11",
@@ -27,6 +28,7 @@
         "laravolt/avatar": "^3.2",
         "spatie/laravel-html": "^2.22",
         "spatie/laravel-permission": "^3.0",
+        "symfony/psr-http-message-bridge": "2.0.0",
         "torann/geoip": "^1.0"
     },
     "require-dev": {

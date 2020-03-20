@@ -56,9 +56,22 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof UnauthorizedException) {
+
+
+             if($request::wantsJson()){
+                return response()->json(['error' => 'Unauthenticated'], 401);
+             }
             return redirect()
                 ->route(home_route())
                 ->withFlashDanger(__('auth.general_error'));
+        }
+
+        // This will replace our 404 response with
+        // a JSON response.
+        if ($exception instanceof ModelNotFoundException && $request->wantsJson()) {
+            return response()->json([
+                'error' => 'Resource not found'
+            ], 404);
         }
 
         return parent::render($request, $exception);

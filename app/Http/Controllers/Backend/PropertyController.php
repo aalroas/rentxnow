@@ -1,17 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\API;
 
-use App\Models\Property;
-use App\Models\property_images;
+
+namespace App\Http\Controllers\Backend;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Validator;
-use App\Http\Controllers\Resources\PropertyResource;
-use App\Http\Controllers\Resources\PropertyCollection;
+use App\Models\Property;
+use App\Models\property_type;
+use App\Models\listing_type;
+use App\Models\rooms_type;
+use App\Models\property_images;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 
 class PropertyController extends Controller
 {
+
     private $uploadPath = "uploads/properties/";
     /**
      * Display a listing of the resource.
@@ -20,39 +25,45 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        return PropertyCollection::collection(Property::paginate(20));
+        $properties = Property::all();
+        return view('backend.property.index', compact('properties'));
     }
 
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $property_types = property_type::all();
+        $listing_types = listing_type::all();
+        $rooms_types = rooms_type::all();
+        return view('backend.property.create',compact('property_types', 'listing_types', 'rooms_types'));
+    }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-
-        $validator = Validator::make($input, [
-            "price"=> "required",
+        $this->validate($request, [
+            'price' => 'required',
         ]);
-
-
-        if ($validator->fails()) {
-            // return response
-            $response = [
-                'success' => false,
-                'message' => 'Validation Error.', $validator->errors(),
-            ];
-            return response()->json($response, 404);
-        }
-
 
         // Start of Upload Files
         if ($request->hasFile('f_image')) {
-            $fileNameToStore =  time() . '.jpg';
+            $fileNameWithExt = $request->file('f_image')->getClientOriginalName();
+            // get file name
+            $filename = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            // get extension
+            $extension = $request->file('f_image')->getClientOriginalExtension();
+
+            $fileNameToStore =  time() . '.' . $extension;
             // upload
             $path = $request->file('f_image')->move('uploads/properties', $fileNameToStore);
         } else {
@@ -60,43 +71,49 @@ class PropertyController extends Controller
         }
 
 
-        $property = new Property();
-
+        $property = new Property;
         $property->f_image = $fileNameToStore;
         $property->price = $request['price'];
         $property->area_size = $request['area_size'];
         $property->location = $request['location'];
         $property->description = $request['description'];
-        $property->user_id = $request->user()->id;
+        $property->user_id = Auth::user()->id;
         $property->save();
+
         $property->property_types()->sync($request->property_type);
         $property->rooms_types()->sync($request->rooms_type);
         $property->listing_types()->sync($request->listing_type);
-
-
-        $data = $property->toArray();
-
-        // return response
-
-        $response = [
-            'success' => true,
-            'data' => $data,
-            'message' => 'Property stored successfully.'
-        ];
-        return response()->json($response, 200);
+        return redirect(route('admin.property.index'));
     }
+
 
     /**
      * Display the specified resource.
      *
+     * @param  \App\Models\Property  $Property
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Property $Property)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function edit($id)
     {
-        $response =  Property::where('id', $id)->get();
-        return  PropertyResource::collection($response);
+        $property = Property::where('id', $id)->first();
+        $property_types = property_type::all();
+        $listing_types = listing_type::all();
+        $rooms_types = rooms_type::all();
+        return view('backend.property.edit', compact('property','property_types', 'listing_types', 'rooms_types'));
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -107,22 +124,9 @@ class PropertyController extends Controller
      */
     public function update(Request $request, Property $property)
     {
-
-        $input = $request->all();
-
-        $validator = Validator::make($input, [
+        $this->validate($request, [
             "price" => "required",
-
         ]);
-
-        if ($validator->fails()) {
-            $response = [
-                'success' => false,
-                'data' => 'Validation Error.',
-                'message' => $validator->errors()
-            ];
-            return response()->json($response, 404);
-        }
 
         // Start of Upload Files
         if ($request->hasFile('f_image')) {
@@ -143,7 +147,6 @@ class PropertyController extends Controller
         $property->description = $request['description'];
 
         $property->save();
-
         if ($request->hasFile('property_images')) {
             $all_images = $request->file('property_images');
             $path = $this->getUploadPath();
@@ -157,25 +160,10 @@ class PropertyController extends Controller
             }
         }
 
-
         $property->property_types()->sync($request->property_type);
         $property->rooms_types()->sync($request->rooms_type);
         $property->listing_types()->sync($request->listing_type);
-        $property->property_images()->get(['id', 'property_image_path']);
-
-        $data = $property->toArray();
-
-        $response = [
-            'success' => true,
-            'data' => $data,
-            'message' => 'Property  updated successfully.'
-        ];
-
-        return response()->json($response, 200);
-
-
-
-
+        return redirect(route('admin.property.index'));
     }
 
     /**
@@ -186,10 +174,8 @@ class PropertyController extends Controller
      */
     public function delete(Property $property)
     {
-
-
         $property_images = property_images::where('property_id', $property)->get();
-        if($property_images){
+        if ($property_images) {
             foreach ($property_images as $image) {
                 unlink('uploads/properties/' . $image->property_image_path);
             }
@@ -198,18 +184,9 @@ class PropertyController extends Controller
             unlink('uploads/properties/' . $property->f_image);
         }
         $property->delete();
-        $data = $property->toArray();
 
-
-        $response = [
-            'success' => true,
-            'data' => $data,
-            'message' => 'Property deleted successfully.'
-        ];
-
-        return response()->json($response, 200);
+        return redirect()->back();
     }
-
 
     public function getUploadPath()
     {
@@ -220,4 +197,17 @@ class PropertyController extends Controller
     {
         $this->uploadPath = Config::get('app.APP_URL') . $uploadPath;
     }
+
+    // public function deleteImage($id)
+    // {
+    //     //For Deleting
+    //     $images = new property_images();
+    //     $images = property_images::find($id);
+    //     File::delete($this->getUploadPath() . $images->property_image_path);
+    //     $images->delete($id);
+    //     return response()->json([
+    //         'success' => 'Data has been deleted successfully!'
+    //     ]);
+    // }
+
 }

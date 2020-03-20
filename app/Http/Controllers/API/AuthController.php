@@ -38,10 +38,16 @@ class AuthController extends Controller
             'confirmation_code' => Str::random(60)
         ]);
         $user->save();
+
+
         // avatar
         // $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
         // Storage::put('/public/avatars/' . $user->id . '/avatar.png', (string) $avatar);
 
+        if ($user) {
+            // Add the default site role to the new user
+            $user->assignRole(config('access.users.default_role'));
+        }
         if (config('access.users.confirm_email')) {
             // Pretty much only if account approval is off, confirm email is on, and this isn't a social account.
             $user->notify(new UserNeedsConfirmation($user->confirmation_code));

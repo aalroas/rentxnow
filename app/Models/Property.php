@@ -10,7 +10,7 @@ class Property extends Model
     public function user()
     {
         // return $this->belongsTo('App\Models\Auth\User');
-        return $this->belongsToMany('App\Models\Auth\User', 'user_properties');
+        return $this->belongsTo('App\Models\Auth\User', 'user_id', 'id');
     }
 
 

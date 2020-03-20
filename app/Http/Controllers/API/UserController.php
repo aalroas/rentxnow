@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Auth\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Resources\UserPropertyCollection;
 
 class UserController extends Controller
 {
@@ -16,6 +17,7 @@ class UserController extends Controller
      */
     public function user(Request $request)
     {
+
         return response()->json($request->user());
     }
 
@@ -25,11 +27,25 @@ class UserController extends Controller
      *
      * @return [json] user object
      */
-    public function view($id)
+    public function view(User $user)
     {
-        $user = User::find($id);
-        return response()->json($user);
+
+            return response()->json($user);
+
     }
+
+
+    /**
+     * Get the authenticated User
+     *
+     * @return [json] user object
+     */
+    public function properties(User $user)
+    {
+        return UserPropertyCollection::collection($user->properties()->paginate(10));
+        // return response()->json($user->properties()->paginate(10));
+    }
+
 
 
     /**

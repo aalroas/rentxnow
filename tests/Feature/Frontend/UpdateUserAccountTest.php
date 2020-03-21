@@ -26,7 +26,7 @@ class UpdateUserAccountTest extends TestCase
             'last_name' => 'Doe',
             'email' => 'john@example.com',
             'timezone' => 'UTC',
-            'avatar_type' => 'gravatar',
+            'avatar_type' => 'avatar',
         ], $userData);
     }
 
@@ -47,14 +47,14 @@ class UpdateUserAccountTest extends TestCase
                 'first_name' => 'John',
                 'last_name' => 'Doe',
                 'email' => 'john@example.com',
-                'avatar_type' => 'gravatar',
+                'avatar_type' => 'avatar',
             ]));
         $user = $user->fresh();
 
         $this->assertSame($user->first_name, 'John');
         $this->assertSame($user->last_name, 'Doe');
         $this->assertSame($user->email, 'john@example.com');
-        $this->assertSame($user->avatar_type, 'gravatar');
+        $this->assertSame($user->avatar_type, 'avatar');
     }
 
     /** @test */

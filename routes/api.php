@@ -24,8 +24,9 @@ Route::group([
     ], function() {
         Route::get('logout', 'AuthController@logout');
         Route::get('user', 'UserController@user');
+        Route::post('user/update', 'UserController@update');
         Route::post('property/store', 'PropertyController@store');
-        Route::put('property/{property}/update', 'PropertyController@update');
+        Route::post('property/{property}/update', 'PropertyController@update');
         Route::get('property/delete/{property}', 'PropertyController@delete');
     });
 });

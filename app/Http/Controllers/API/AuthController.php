@@ -41,8 +41,8 @@ class AuthController extends Controller
 
 
         // avatar
-        // $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
-        // Storage::put('/public/avatars/' . $user->id . '/avatar.png', (string) $avatar);
+        $avatar = Avatar::create($user->first_name)->getImageObject()->encode('png');
+        Storage::put('/public/avatars/'. $user->id . '.png', (string) $avatar);
 
         if ($user) {
             // Add the default site role to the new user

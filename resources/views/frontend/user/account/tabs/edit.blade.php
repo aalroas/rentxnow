@@ -7,7 +7,7 @@
                 {{ html()->label(__('validation.attributes.frontend.avatar'))->for('avatar') }}
 
                 <div>
-                    <input type="radio" name="avatar_type" value="gravatar" {{ $logged_in_user->avatar_type == 'gravatar' ? 'checked' : '' }} /> Gravatar
+                    <input type="radio" name="avatar_type" value="avatar" {{ $logged_in_user->avatar_type == 'avatar' ? 'checked' : '' }} /> avatar
                     <input type="radio" name="avatar_type" value="storage" {{ $logged_in_user->avatar_type == 'storage' ? 'checked' : '' }} /> Upload
 
                     @foreach($logged_in_user->providers as $provider)

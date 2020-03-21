@@ -2,6 +2,8 @@
 
 namespace App\Models\Auth\Traits\Method;
 
+use Illuminate\Support\Facades\Storage;
+
 /**
  * Trait UserMethod.
  */
@@ -29,19 +31,16 @@ trait UserMethod
      * @throws \Illuminate\Container\EntryNotFoundException
      * @return bool|\Illuminate\Contracts\Routing\UrlGenerator|mixed|string
      */
-    public function getPicture($size = false)
+    public function getPicture()
     {
         switch ($this->avatar_type) {
-            case 'gravatar':
-                if (! $size) {
-                    $size = config('gravatar.default.size');
-                }
-
-                return gravatar()->get($this->email, ['size' => $size]);
-
+            case 'avatar':
+                return Storage::url('avatars/' . $this->id.'.png');
             case 'storage':
-                return url('storage/'.$this->avatar_location);
+                return url($this->avatar_location);
         }
+
+
 
         $social_avatar = $this->providers()->where('provider', $this->avatar_type)->first();
 
@@ -99,4 +98,6 @@ trait UserMethod
     {
         return config('access.users.requires_approval') && ! $this->confirmed;
     }
+
+
 }

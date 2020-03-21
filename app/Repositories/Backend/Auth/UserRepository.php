@@ -2,22 +2,24 @@
 
 namespace App\Repositories\Backend\Auth;
 
-use App\Events\Backend\Auth\User\UserConfirmed;
-use App\Events\Backend\Auth\User\UserCreated;
-use App\Events\Backend\Auth\User\UserDeactivated;
-use App\Events\Backend\Auth\User\UserPasswordChanged;
-use App\Events\Backend\Auth\User\UserPermanentlyDeleted;
-use App\Events\Backend\Auth\User\UserReactivated;
-use App\Events\Backend\Auth\User\UserRestored;
-use App\Events\Backend\Auth\User\UserUnconfirmed;
-use App\Events\Backend\Auth\User\UserUpdated;
-use App\Exceptions\GeneralException;
 use App\Models\Auth\User;
-use App\Notifications\Backend\Auth\UserAccountActive;
-use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
-use App\Repositories\BaseRepository;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Avatar;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\GeneralException;
+use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Storage;
+use App\Events\Backend\Auth\User\UserCreated;
+use App\Events\Backend\Auth\User\UserUpdated;
+use App\Events\Backend\Auth\User\UserRestored;
+use App\Events\Backend\Auth\User\UserConfirmed;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\Events\Backend\Auth\User\UserDeactivated;
+use App\Events\Backend\Auth\User\UserReactivated;
+use App\Events\Backend\Auth\User\UserUnconfirmed;
+use App\Events\Backend\Auth\User\UserPasswordChanged;
+use App\Notifications\Backend\Auth\UserAccountActive;
+use App\Events\Backend\Auth\User\UserPermanentlyDeleted;
+use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
 
 /**
  * Class UserRepository.
@@ -126,6 +128,8 @@ class UserRepository extends BaseRepository
                 // Add selected roles/permissions
                 $user->syncRoles($data['roles']);
                 $user->syncPermissions($data['permissions']);
+                $avatar = Avatar::create($user->first_name)->getImageObject()->encode('png');
+                Storage::put('/public/avatars/' . $user->id . '.png', (string) $avatar);
 
                 //Send confirmation email if requested and account approval is off
                 if ($user->confirmed === false && isset($data['confirmation_email']) && ! config('access.users.requires_approval')) {

@@ -18,7 +18,7 @@ class PropertyCollection extends Resource
     {
         return [
             'id' => $this->id,
-            'user' => $this->user()->get(['id', 'first_name', 'last_name']),
+            'user' => $this->user()->get(['id', 'first_name', 'last_name','avatar_location','avatar_type']),
             'f_image' => asset('uploads/properties/') . "/" . $this->f_image,
             'price' => $this->price,
             'area_size' => $this->area_size,

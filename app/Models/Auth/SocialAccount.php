@@ -26,6 +26,5 @@ class SocialAccount extends RecordingModel
         'provider',
         'provider_id',
         'token',
-        'avatar',
     ];
 }

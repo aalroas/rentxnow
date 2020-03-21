@@ -21,9 +21,9 @@ class User extends BaseUser
 
     public function properties()
     {
-
-        return $this->hasMany('App\Models\Property', 'id', 'user_id');
+        return $this->hasMany('App\Models\Property', 'user_id', 'id');
     }
+
 
 
 

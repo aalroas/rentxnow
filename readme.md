@@ -2,7 +2,7 @@ coming soon!
 
 rentXnow backend and API
 
-http://kodatik.teach/
+http://kodatik.tech/
 
 Laravel  - Passport  
 

@@ -41,7 +41,6 @@ abstract class BaseUser extends Authenticatable implements Recordable
         'last_name',
         'email',
         'avatar_type',
-        'avatar',
         'avatar_location',
         'password',
         'password_changed_at',
@@ -60,7 +59,7 @@ abstract class BaseUser extends Authenticatable implements Recordable
      */
     protected $appends = [
         'full_name',
-        'avatar_location'
+        'picture',
     ];
 
     /**
@@ -114,10 +113,6 @@ abstract class BaseUser extends Authenticatable implements Recordable
         return $this->id !== 1;
     }
 
-    public function getAvatarLocationAttribute()
-    {
-        return Storage::url('avatars/' . $this->id . '/' . $this->avatar);
-    }
 
 
 }

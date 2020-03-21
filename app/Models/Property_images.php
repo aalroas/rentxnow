@@ -10,6 +10,7 @@ class property_images extends Model
     protected $hidden = ['pivot'];
 
     protected $fillable = ['property_id', 'property_image_path'];
+
     public function property()
     {
         return $this->belongsTo('App\Models\Property');

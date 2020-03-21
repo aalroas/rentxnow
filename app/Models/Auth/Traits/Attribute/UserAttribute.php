@@ -3,6 +3,7 @@
 namespace App\Models\Auth\Traits\Attribute;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Trait UserAttribute.
@@ -53,6 +54,9 @@ trait UserAttribute
     {
         return $this->getPicture();
     }
+
+
+
 
     /**
      * @return string

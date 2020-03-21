@@ -12,13 +12,13 @@ if (! function_exists('app_name')) {
     }
 }
 
-if (! function_exists('gravatar')) {
+if (! function_exists('avatar')) {
     /**
-     * Access the gravatar helper.
+     * Access the avatar helper.
      */
-    function gravatar()
+    function avatar()
     {
-        return app('gravatar');
+        return app('avatar');
     }
 }
 

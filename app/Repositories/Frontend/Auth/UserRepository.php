@@ -2,17 +2,18 @@
 
 namespace App\Repositories\Frontend\Auth;
 
-use App\Events\Frontend\Auth\UserConfirmed;
-use App\Events\Frontend\Auth\UserProviderRegistered;
-use App\Exceptions\GeneralException;
-use App\Models\Auth\SocialAccount;
 use App\Models\Auth\User;
-use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
-use App\Repositories\BaseRepository;
+use  Avatar;
 use Illuminate\Http\UploadedFile;
+use App\Models\Auth\SocialAccount;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\GeneralException;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Events\Frontend\Auth\UserConfirmed;
+use App\Events\Frontend\Auth\UserProviderRegistered;
+use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
 
 /**
  * Class UserRepository.
@@ -121,7 +122,8 @@ class UserRepository extends BaseRepository
                 // Pretty much only if account approval is off, confirm email is on, and this isn't a social account.
                 $user->notify(new UserNeedsConfirmation($user->confirmation_code));
             }
-
+            $avatar = Avatar::create($user->first_name)->getImageObject()->encode('png');
+            Storage::put('/public/avatars/' . $user->id . '.png', (string) $avatar);
             // Return the user object
             return $user;
         });

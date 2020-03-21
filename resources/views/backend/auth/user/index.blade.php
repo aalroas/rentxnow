@@ -27,6 +27,7 @@
                     <table class="table">
                         <thead>
                         <tr>
+                            <th>@lang('labels.backend.access.users.tabs.content.overview.avatar')</th>
                             <th>@lang('labels.backend.access.users.table.last_name')</th>
                             <th>@lang('labels.backend.access.users.table.first_name')</th>
                             <th>@lang('labels.backend.access.users.table.email')</th>
@@ -41,6 +42,7 @@
                         <tbody>
                         @foreach($users as $user)
                             <tr>
+                            <td align="center"> <img style="height: 50px;width: 50px;" class="img-circle" src="{{ $user->picture }}"></td>
                                 <td>{{ $user->last_name }}</td>
                                 <td>{{ $user->first_name }}</td>
                                 <td>{{ $user->email }}</td>
